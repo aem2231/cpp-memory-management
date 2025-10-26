@@ -136,8 +136,47 @@ public:
 
     Node* newNode = new Node; // create a new node
     Node* old_next = curr->next; // save the value of curr->next, so we know where newNode->next should point to
+    if (old_next == nullptr) {
+      tail = newNode; // update tail in the case that  the newNode is at the end of the list
+    }
     curr->next = newNode; // point next of the previous node to newNode
     newNode->next = old_next;
     newNode->data = element;
+  }
+
+  void erase(int index) {
+    int i = 0;
+    Node* curr = head;
+
+    if (index < 0) {
+      throw std::out_of_range("Index out of range");
+    }
+
+    if (index == 0) {
+      Node* new_head = head->next;
+      delete head;
+      head = new_head;
+      if (head == nullptr) { // account for the edge case of the list being empty
+        tail = nullptr;
+      }
+      return;
+    }
+
+    while (i < index-1 && curr!=nullptr) { // traverse the list unti we reach the index before the one we are looking for
+      i++;                                 // or until we reach the end
+      curr = curr->next;
+    }
+    Node* to_erase = curr->next; // create a copy of curr->next
+
+    if (to_erase == nullptr) { // if to_erase (curr->next) is null, the index is out of range
+      throw std::out_of_range("Index out of range");
+    }
+
+    if (to_erase == tail) {
+      tail = curr; // if tail points to to_erase, we need to update tail to curr
+    }
+
+    curr->next = to_erase->next; // and assign to_erase->next (curr->next->next) to curr->next
+    delete to_erase; // and free the memory used by curr->next
   }
 };
