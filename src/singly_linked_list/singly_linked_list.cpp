@@ -104,4 +104,40 @@ public:
       tail=curr; // and finally update tail
     }
   }
+
+  void insert(int index, int element) {
+    int i = 0; // initialize a varible to track which index we are at
+    Node* curr = head;
+
+    if (index < 0) {
+      throw std::out_of_range("Index out of range");
+    }
+
+    if (index == 0) { // no need to change the value of next in other nodes when we insert at 0
+      Node* newNode = new Node;
+      Node* old_head = head; // save the old head
+      head = newNode; // update the head
+      newNode->next = old_head; // old head stll points to old index 0 (now index 1)
+      newNode->data = element;
+      return;
+    }
+
+    // traverse the list until we have reached the index before the one we are inserting at
+    // so we can also update node->next of the node before it
+    // or we reach the end
+    while (i < index-1 && curr != nullptr) {
+      curr = curr->next;
+      i++;
+    }
+
+    if (curr == nullptr) { // if we did reach the end, it means the index is out of range
+      throw std::out_of_range("Index out of range"); // so throw an error
+    }
+
+    Node* newNode = new Node; // create a new node
+    Node* old_next = curr->next; // save the value of curr->next, so we know where newNode->next should point to
+    curr->next = newNode; // point next of the previous node to newNode
+    newNode->next = old_next;
+    newNode->data = element;
+  }
 };
